@@ -29,7 +29,7 @@ max.markers <- 100
 # Autosomes (i.e. no X/Y)
 #
 #######################################
-source("simMAF0.2-0.4.R")
+source("simMAF0.2_0.4.R")
 
 #######################################
 #
@@ -47,7 +47,7 @@ source("simMAF0.5.R")
 # Diploid (i.e. no X/Y)
 #
 #######################################
-source("simMAF0.3-0.5.R")
+source("simMAF0.3_0.5.R")
 
 #######################################
 #
@@ -73,6 +73,16 @@ source("simDevyser.R")
 #
 #######################################
 source("simXY.R")
+
+#######################################
+#
+# Setting 6:
+# MAF 0.5, double transplant
+#   
+# fully informative markers
+#
+#######################################
+source("simDoubleTransplant.R")
 
 #######################################
 #
@@ -180,9 +190,23 @@ df12 <- data.frame(Markers=3:24,
                   Related = "Parent-child",
                   MAF = "Devyser 24-plex assay")
 
-df.comp <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12)
+df13 <- data.frame(Markers=3:max.markers,
+                  Percentage = means.vec.mud.mud,
+                  Related = "Double (2x MUD)",
+                  MAF = "all 0.5")
+df14 <- data.frame(Markers=3:max.markers,
+                  Percentage = means.vec.sib.sib,
+                  Related = "Double (2x sibling)",
+                  MAF = "all 0.5")
+df15 <- data.frame(Markers=3:max.markers,
+                  Percentage = means.vec.mud.sib,
+                  Related = "Double (sibling + MUD)",
+                  MAF = "all 0.5")
+
+df.comp <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12, df13, df14, df15)
 
 grey_palette <- c("#FCBF49", "#003049", "#D62828")
+grey_palette.ext <- c("#000000", "#000000", "#000000", "#FCBF49", "#003049", "#D62828")
 g1 <- ggplot(df.final.ideal, aes(x=Markers, y = Percentage, col = Related, type = Type))+
         geom_line(aes(linetype = Type), size =0.5)+
         theme_linedraw()+
@@ -223,12 +247,12 @@ g2 <- ggplot(df.comp, aes(x=Markers, y = Percentage, col = Related, type = MAF))
   scale_x_continuous(breaks= seq(0, 100, 10),
                      minor_breaks = seq(0, 100, 1),
                      expand = c(0, 0),
-                     limits=c(10, 50))+
+                     limits=c(10, 100))+
   xlab("Number of markers analysed")+ylab("Transplants with at least 3 informative markers")+
-  scale_colour_manual(values = grey_palette)+
+  scale_colour_manual(values = grey_palette.ext)+
   scale_linetype_manual(values=c("dotted", "longdash", "solid", "dotdash"))
 
-pdf("Figures/sim-nmarkers.pdf", height = 11)
+pdf("../Figures/sim-nmarkers2.pdf", height = 11)
 plot_grid(plotlist=list(g2, g1), labels = "AUTO", nrow = 2)
 dev.off()
 
